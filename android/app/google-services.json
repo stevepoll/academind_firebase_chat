@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "645231133086",
+    "firebase_url": "https://academind-flutter-chat-af04c.firebaseio.com",
+    "project_id": "academind-flutter-chat-af04c",
+    "storage_bucket": "academind-flutter-chat-af04c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:645231133086:android:cdd61ea0983dcb3414d68f",
+        "android_client_info": {
+          "package_name": "com.example.academind_firebase_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "645231133086-cbf543cqtdn5fthg5oe81n1c7u0ttnas.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKi6GntSdCWzzI8LFaNxkI4I_8v5W9jUw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "645231133086-cbf543cqtdn5fthg5oe81n1c7u0ttnas.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "645231133086-rv8fsrcr42o3j21g68tu5jkle7rkma22.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.academindFirebaseChat"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
