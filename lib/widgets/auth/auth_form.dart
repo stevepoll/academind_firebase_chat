@@ -1,10 +1,13 @@
+import 'dart:io';
+
+import 'package:academind_firebase_chat/widgets/pickers/user_image_picker.dart';
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
   final bool isLoading;
 
   final void Function(String email, String password, String userName,
-      bool isLogin, BuildContext ctx) submitForm;
+      File image, bool isLogin, BuildContext ctx) submitForm;
 
   AuthForm(this.submitForm, this.isLoading);
 
@@ -18,15 +21,30 @@ class _AuthFormState extends State<AuthForm> {
   var _email = '';
   var _userName = '';
   var _password = '';
+  File _userImageFile;
+
+  void _pickedImage(File image) {
+    _userImageFile = image;
+  }
 
   void _trySubmit() {
     final isValid = _formKey.currentState.validate();
     // Close the keyboard
     FocusScope.of(context).unfocus();
+    if (_userImageFile == null && !_isLogin) {
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please add an image'),
+          backgroundColor: Theme.of(context).errorColor,
+        ),
+      );
+      return;
+    }
 
     if (isValid) {
       _formKey.currentState.save();
-      widget.submitForm(_email, _password, _userName, _isLogin, context);
+      widget.submitForm(
+          _email, _password, _userName, _userImageFile, _isLogin, context);
       // Use the values to send to Firebase
     }
   }
@@ -50,6 +68,7 @@ class _AuthFormState extends State<AuthForm> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (!_isLogin) UserImagePicker(_pickedImage),
                   // Email address
                   TextFormField(
                     key: ValueKey('email'),
@@ -61,6 +80,9 @@ class _AuthFormState extends State<AuthForm> {
                       return null;
                     },
                     keyboardType: TextInputType.emailAddress,
+                    autocorrect: false,
+                    enableSuggestions: false,
+                    textCapitalization: TextCapitalization.none,
                     onSaved: (value) {
                       _email = value.trim();
                     },
@@ -76,6 +98,9 @@ class _AuthFormState extends State<AuthForm> {
                         }
                         return null;
                       },
+                      autocorrect: true,
+                      textCapitalization: TextCapitalization.words,
+                      enableSuggestions: false,
                       onSaved: (value) {
                         _userName = value.trim();
                       },
