@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:academind_firebase_chat/widgets/auth/auth_form.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -13,25 +16,36 @@ class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth.instance;
   var _isLoading = false;
 
-  void _submitAuth(String email, String pw, String username, bool isLogin,
-      BuildContext ctx) async {
-    AuthResult authResult;
+  void _submitAuth(String email, String pw, String username, File image,
+      bool isLogin, BuildContext ctx) async {
+    UserCredential userCred;
     try {
       setState(() {
         _isLoading = true;
       });
       if (isLogin) {
         // Log a user in
-        authResult =
+        userCred =
             await _auth.signInWithEmailAndPassword(email: email, password: pw);
       } else {
         // Create a new user
-        authResult = await _auth.createUserWithEmailAndPassword(
+        // First upload the image so the path can be saved with the user
+
+        userCred = await _auth.createUserWithEmailAndPassword(
             email: email, password: pw);
-        await Firestore.instance
+
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('user_images')
+            .child(userCred.user.uid + '.jpg');
+
+        await ref.putFile(image);
+        final imageUrl = await ref.getDownloadURL();
+
+        await FirebaseFirestore.instance
             .collection('users')
-            .document(authResult.user.uid)
-            .setData({'username': username, 'email': email});
+            .doc(userCred.user.uid)
+            .set({'username': username, 'email': email, 'imageUrl': imageUrl});
       }
     } on PlatformException catch (e) {
       var message = 'An error occurred. Please check your credentials!';
